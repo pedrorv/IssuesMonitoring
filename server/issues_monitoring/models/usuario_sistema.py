@@ -3,11 +3,12 @@ from ..common.erros import NaoAutorizado, InformacoesIncorretas
 from .usuario import Usuario
 from . import db
 
+
 class UsuarioSistema(Usuario):
     admin = False
 
-    def __init__(self, login, senha, email, nome, id = None,
-                 data_aprovacao = None, hash = False):
+    def __init__(self, login, senha, email, nome, id=None,
+                 data_aprovacao=None, hash=False):
         super().__init__(nome, email, data_aprovacao)
         self.id = id
         self.login = login
@@ -23,7 +24,7 @@ class UsuarioSistema(Usuario):
             SELECT admin, login, senha, email, nome, user_id, data_aprov
             FROM User_Sys
             WHERE user_id = ?;""",
-            (user_id,))
+                           (user_id,))
         usuario = UsuarioSistema(*data[1:], hash=True)
         usuario.admin = bool(int(data[0]))
         return usuario
@@ -54,7 +55,7 @@ class UsuarioSistema(Usuario):
             UPDATE User_Sys
             SET senha = ?
             WHERE login = ?""",
-            (UsuarioSistema.__hash_senha(senha), login))
+                   (UsuarioSistema.__hash_senha(senha), login))
         return True
 
     def autenticar(login, senha):
@@ -73,13 +74,29 @@ class UsuarioSistema(Usuario):
         else:
             raise InformacoesIncorretas
 
+    def validar_usuario_authenticator(login, senha):
+        args = db.fetchone("""
+            SELECT user_id, senha, admin, data_aprov
+            FROM User_Sys
+            WHERE login = ?;""", (login,))
+        if args is None:
+            return {'erro': "Nome de usuário inválido."}
+
+        (_id, _hash, _admin, data_aprov) = args
+        if data_aprov is None:
+            return {'erro': "Cadastro não aprovado."}
+        if UsuarioSistema.__hash_senha(senha, _hash) == _hash:
+            return {'mensagem': "Usuário válido."}
+        else:
+            return {'erro': "Senha incorreta."}
+
     def existe(login, email):
         return db.fetchone("""
             SELECT user_id
             FROM User_Sys
             WHERE login = ?
                   OR email = ?;""",
-            (login, email)) is not None
+                           (login, email)) is not None
 
     def editar(self):
         db.execute("""UPDATE User_Sys
@@ -97,7 +114,7 @@ class UsuarioSistema(Usuario):
                    WHERE user_id = ?;""",
                    (id,))
 
-    def __hash_senha(senha, _hash = None):
+    def __hash_senha(senha, _hash=None):
         if isinstance(senha, str):
             senha = bytes(senha, 'utf-8')
 

@@ -1,6 +1,6 @@
 from os import getcwd, stat
 from os.path import join
-from flask          import render_template, request, redirect, url_for, session, Response
+from flask          import render_template, request, redirect, url_for, session, Response, jsonify
 from werkzeug.datastructures import Headers
 from datetime       import datetime, timedelta
 from ..common.erros import NaoAutorizado, InformacoesIncorretas
@@ -914,3 +914,19 @@ def relatorio_pdf(nome):
     header.add('Content-Length', '{}'.format(stat(path).st_size))
     return Response(stream(),
                     headers=header)
+
+
+@app.route('/validar_usuario_authenticator', methods=["POST"])
+def validar_usuario_authenticator():
+    conteudo = request.get_json(silent=True)
+    login = conteudo.get('login')
+    senha = conteudo.get('senha')
+    validacao = controllers.validar_usuario_authenticator(login, senha)
+    resposta = jsonify(validacao)
+
+    if 'erro' in validacao:
+        resposta.status_code = 401
+        return resposta
+    
+    return resposta
+
