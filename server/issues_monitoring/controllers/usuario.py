@@ -7,10 +7,6 @@ def autenticar(usuario, senha):
     return UsuarioSistema.autenticar(usuario, senha)
 
 
-def validar_usuario_authenticator(user_id, email):
-    return UsuarioLab.validar_usuario_authenticator(user_id, email)
-
-
 def alterar_senha(usuario, senha):
     return UsuarioSistema.alterar_senha(usuario, senha)
 
@@ -125,3 +121,11 @@ def log_usuario(hoje, amanha, lab_id):
 
 def adicionar_usuario_lab(lab_id, user_id):
     UsuarioLab.adicionar_ao_laboratorio(lab_id, user_id)
+
+
+def validar_usuario_authenticator(user_id, email):
+    return UsuarioLab.validar_usuario_authenticator(user_id, email)
+
+
+def registrar_entrada_authenticator(user_id, lab_id):
+    return UsuarioLab.registrar_entrada_authenticator(user_id, lab_id)

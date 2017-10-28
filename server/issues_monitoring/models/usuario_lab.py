@@ -4,6 +4,7 @@ from ..common.erros import UsuarioLabJaCadastrado
 from .evento import Evento
 from .usuario import Usuario
 from . import db
+import time
 
 
 class UsuarioLab(Usuario):
@@ -248,3 +249,26 @@ class UsuarioLab(Usuario):
             return {'erro': "Usuário e/ou email inválido(s)."}
 
         return {'user_id': user_id}
+
+    def registrar_entrada_authenticator(user_id, lab_id):
+        atualizar = db.execute("""
+                UPDATE Presenca
+                SET presente = ?
+                WHERE user_id = ?
+                AND   lab_id  = ?;""",
+                               (True, user_id,
+                                lab_id))
+
+        if atualizar != None:
+            return {'erro': "Não foi possível atualizar dado de entrada."}
+
+        registrar = db.execute("""
+            INSERT INTO Log_Presenca
+            (data, user_id, lab_id, evento)
+            VALUES (?, ?, ?, ?);""",
+                               (int(time.time()), user_id, lab_id, "IN"))
+
+        if registrar != None:
+            return {'erro': "Não foi possível registrar entrada no log."}
+
+        return {'mensagem': "Entrada registrada com sucesso."}

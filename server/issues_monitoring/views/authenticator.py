@@ -15,3 +15,18 @@ def validar_usuario_authenticator():
         return resposta
 
     return resposta
+
+
+@app.route('/registrar_entrada_authenticator', methods=["POST"])
+def registrar_entrada_authenticator():
+    conteudo = request.get_json(silent=True)
+    user_id = conteudo.get('user_id')
+    lab_id = conteudo.get('lab_id')
+    validacao = controllers.registrar_entrada_authenticator(user_id, lab_id)
+    resposta = jsonify(validacao)
+
+    if 'erro' in validacao:
+        resposta.status_code = 500
+        return resposta
+
+    return resposta
