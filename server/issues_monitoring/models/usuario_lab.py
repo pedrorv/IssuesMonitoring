@@ -272,3 +272,26 @@ class UsuarioLab(Usuario):
             return {'erro': "Não foi possível registrar entrada no log."}
 
         return {'mensagem': "Entrada registrada com sucesso."}
+
+    def registrar_saida_authenticator(user_id, lab_id):
+        atualizar = db.execute("""
+                UPDATE Presenca
+                SET presente = ?
+                WHERE user_id = ?
+                AND   lab_id  = ?;""",
+                               (False, user_id,
+                                lab_id))
+
+        if atualizar != None:
+            return {'erro': "Não foi possível atualizar dado de saída."}
+
+        registrar = db.execute("""
+            INSERT INTO Log_Presenca
+            (data, user_id, lab_id, evento)
+            VALUES (?, ?, ?, ?);""",
+                               (int(time.time()), user_id, lab_id, "OUT"))
+
+        if registrar != None:
+            return {'erro': "Não foi possível registrar saída no log."}
+
+        return {'mensagem': "Saída registrada com sucesso."}

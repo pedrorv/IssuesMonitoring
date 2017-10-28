@@ -129,3 +129,7 @@ def validar_usuario_authenticator(user_id, email):
 
 def registrar_entrada_authenticator(user_id, lab_id):
     return UsuarioLab.registrar_entrada_authenticator(user_id, lab_id)
+
+
+def registrar_saida_authenticator(user_id, lab_id):
+    return UsuarioLab.registrar_saida_authenticator(user_id, lab_id)
