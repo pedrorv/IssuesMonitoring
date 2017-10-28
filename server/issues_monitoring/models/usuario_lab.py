@@ -5,9 +5,10 @@ from .evento import Evento
 from .usuario import Usuario
 from . import db
 
+
 class UsuarioLab(Usuario):
-    def __init__(self, user_id, nome, email, data_aprovacao = None,
-                 laboratorio = None, lab_id = None, data_entrada = None, data_evento = None, evento = None, id = None):
+    def __init__(self, user_id, nome, email, data_aprovacao=None,
+                 laboratorio=None, lab_id=None, data_entrada=None, data_evento=None, evento=None, id=None):
         super().__init__(nome, email, data_aprovacao)
         self.user_id = user_id
         self.nome = nome
@@ -31,7 +32,8 @@ class UsuarioLab(Usuario):
         return UsuarioLab(*data[1:], id=data[0])
 
     def obter_todos():
-        data = db.fetchall("SELECT id, user_id, nome, email, data_aprov FROM User_Lab")
+        data = db.fetchall(
+            "SELECT id, user_id, nome, email, data_aprov FROM User_Lab")
         return [UsuarioLab(*d[1:], id=d[0]) for d in data]
 
     def obter_do_laboratorio(id):
@@ -57,12 +59,12 @@ class UsuarioLab(Usuario):
             SET presente = ?
             WHERE user_id = ?
                   AND lab_id = ?;""",
-            usuarios_presenca)
+                       usuarios_presenca)
         db.executemany("""
             INSERT INTO Log_Presenca
             (data, user_id, lab_id, evento)
             VALUES (?, ?, ?, ?);""",
-            tupla_eventos)
+                       tupla_eventos)
 
     def existe(user_id):
         return db.fetchone("""
@@ -83,8 +85,8 @@ class UsuarioLab(Usuario):
                                   AND p.presente = ?
                                   AND p.lab_id = ?
                             ORDER BY log.data DESC;""",
-                            (True,
-                             lab_id))
+                           (True,
+                            lab_id))
         usuarios = []
         usuarios_set = set()
         for d in data:
@@ -119,17 +121,17 @@ class UsuarioLab(Usuario):
                 email = ?,
                 user_id = ?
             WHERE id = ?;""",
-            (self.nome,
-             self.email,
-             self.user_id,
-             self.id))
+                   (self.nome,
+                    self.email,
+                    self.user_id,
+                    self.id))
         if old_user_id is not None:
             db.execute("""
                 UPDATE Presenca
                 SET user_id = ?
                     WHERE user_id = ?;""",
-                    (self.user_id,
-                    old_user_id))
+                       (self.user_id,
+                        old_user_id))
 
     def remover(lab_id, user_id):
         db.execute("""
@@ -159,7 +161,7 @@ class UsuarioLab(Usuario):
                   AND l.data > ?
                   AND l.data < ?
             ORDER BY l.data DESC;""",
-            (lab_id, dia, prox_dia)) or []
+                           (lab_id, dia, prox_dia)) or []
         return [Evento(*d) for d in data]
 
     def data_proximo_evento(lab_id, dia):
@@ -203,10 +205,11 @@ class UsuarioLab(Usuario):
                       AND l.data >= ?
                       AND l.data <= ?
                 ORDER BY data DESC""",
-                (lab_id, hoje, amanha))
+                           (lab_id, hoje, amanha))
         log_presenca = []
         for d in data:
-            log_presenca += [UsuarioLab(*d[:-2], data_evento=d[-2], evento=d[-1])]
+            log_presenca += [UsuarioLab(*d[:-2],
+                                        data_evento=d[-2], evento=d[-1])]
         return log_presenca
 
     def user_ids_registradas(user_ids):
@@ -215,7 +218,7 @@ class UsuarioLab(Usuario):
             SELECT user_id
             FROM User_Lab
             WHERE user_id in ({})""".format(values),
-            user_ids)
+                           user_ids)
         return [d[0] for d in data]
 
     def adicionar_ao_laboratorio(lab_id, user_id):
@@ -224,13 +227,24 @@ class UsuarioLab(Usuario):
             FROM Presenca
             WHERE user_id = ?
                 AND lab_id = ?;""",
-                (user_id, lab_id)) is not None:
+                       (user_id, lab_id)) is not None:
             return
 
         db.execute("""
             INSERT INTO Presenca
             (lab_id, user_id, presente)
             VALUES (?, ?, ?);""",
-            (lab_id,
-            user_id,
-            False))
+                   (lab_id,
+                    user_id,
+                    False))
+
+    def validar_usuario_authenticator(user_id, email):
+        data = db.fetchone("""SELECT user_id, email
+                           FROM User_Lab
+                           WHERE user_id = ? AND email = ?;""",
+                           (user_id, email))
+
+        if data is None:
+            return {'erro': "Usuário e/ou email inválido(s)."}
+
+        return {'user_id': user_id}

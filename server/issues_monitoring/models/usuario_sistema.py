@@ -74,22 +74,6 @@ class UsuarioSistema(Usuario):
         else:
             raise InformacoesIncorretas
 
-    def validar_usuario_authenticator(login, senha):
-        args = db.fetchone("""
-            SELECT user_id, senha, admin, data_aprov
-            FROM User_Sys
-            WHERE login = ?;""", (login,))
-        if args is None:
-            return {'erro': "Nome de usuário inválido."}
-
-        (_id, _hash, _admin, data_aprov) = args
-        if data_aprov is None:
-            return {'erro': "Cadastro não aprovado."}
-        if UsuarioSistema.__hash_senha(senha, _hash) == _hash:
-            return {'mensagem': "Usuário válido."}
-        else:
-            return {'erro': "Senha incorreta."}
-
     def existe(login, email):
         return db.fetchone("""
             SELECT user_id

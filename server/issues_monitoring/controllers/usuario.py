@@ -7,8 +7,8 @@ def autenticar(usuario, senha):
     return UsuarioSistema.autenticar(usuario, senha)
 
 
-def validar_usuario_authenticator(usuario, senha):
-    return UsuarioSistema.validar_usuario_authenticator(usuario, senha)
+def validar_usuario_authenticator(user_id, email):
+    return UsuarioLab.validar_usuario_authenticator(user_id, email)
 
 
 def alterar_senha(usuario, senha):
