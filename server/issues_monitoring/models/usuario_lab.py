@@ -248,7 +248,7 @@ class UsuarioLab(Usuario):
         if data is None:
             return {'erro': "Usuário e/ou email inválido(s)."}
 
-        return {'user_id': user_id}
+        return {'userId': user_id}
 
     def registrar_entrada_authenticator(user_id, lab_id):
         atualizar = db.execute("""
