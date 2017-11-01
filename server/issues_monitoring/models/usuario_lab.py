@@ -240,7 +240,7 @@ class UsuarioLab(Usuario):
                     False))
 
     def validar_usuario_authenticator(user_id, email):
-        data = db.fetchall("""SELECT User_Lab.user_id, User_Lab.email, Presenca.lab_id, Lab.nome
+        data = db.fetchall("""SELECT User_Lab.user_id, User_Lab.email, Presenca.lab_id, Lab.nome, Presenca.presente
                            FROM User_Lab
                            INNER JOIN Presenca
                            ON User_Lab.user_id = Presenca.user_id
@@ -254,7 +254,7 @@ class UsuarioLab(Usuario):
 
         labs = []
         for lab in data:
-            labs.append({'labId': lab[2], 'name': lab[3]})
+            labs.append({'labId': lab[2], 'name': lab[3], 'present': lab[4]})
 
         return {'userId': data[0][0], 'email': data[0][1], 'labs': labs}
 
