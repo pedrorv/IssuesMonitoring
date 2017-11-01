@@ -254,7 +254,8 @@ class UsuarioLab(Usuario):
 
         labs = []
         for lab in data:
-            labs.append({'labId': lab[2], 'name': lab[3], 'present': lab[4]})
+            labs.append(
+                {'labId': lab[2], 'name': lab[3], 'present': bool(lab[4])})
 
         return {'userId': data[0][0], 'email': data[0][1], 'labs': labs}
 
