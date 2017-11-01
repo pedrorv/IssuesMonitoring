@@ -240,15 +240,23 @@ class UsuarioLab(Usuario):
                     False))
 
     def validar_usuario_authenticator(user_id, email):
-        data = db.fetchone("""SELECT user_id, email
+        data = db.fetchall("""SELECT User_Lab.user_id, User_Lab.email, Presenca.lab_id, Lab.nome
                            FROM User_Lab
-                           WHERE user_id = ? AND email = ?;""",
+                           INNER JOIN Presenca
+                           ON User_Lab.user_id = Presenca.user_id
+                           INNER JOIN Lab
+                           ON Presenca.lab_id = Lab.lab_id
+                           WHERE User_Lab.user_id = ? AND User_Lab.email = ?;""",
                            (user_id, email))
 
         if data is None:
             return {'erro': "Usuário e/ou email inválido(s)."}
 
-        return {'userId': user_id}
+        labs = []
+        for lab in data:
+            labs.append({'labId': lab[2], 'name': lab[3]})
+
+        return {'userId': data[0][0], 'email': data[0][1], 'labs': labs}
 
     def registrar_entrada_authenticator(user_id, lab_id):
         atualizar = db.execute("""
