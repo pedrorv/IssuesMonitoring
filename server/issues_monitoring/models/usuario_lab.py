@@ -249,7 +249,7 @@ class UsuarioLab(Usuario):
                            WHERE User_Lab.user_id = ? AND User_Lab.email = ?;""",
                            (user_id, email))
 
-        if data is None:
+        if (data is None) or (len(data) == 0):
             return {'erro': "Usuário e/ou email inválido(s)."}
 
         labs = []
