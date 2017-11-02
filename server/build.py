@@ -8,13 +8,13 @@ from db.create_db import work as create_db
 
 Popen(["mkdir",
        "issues_monitoring/reports"],
-       stderr=DEVNULL).wait()
+      stderr=DEVNULL).wait()
 
 Popen(["virtualenv",
        "-p",
        "python3",
        ".env"],
-       stderr=DEVNULL).wait()
+      stderr=DEVNULL).wait()
 
 __file__ = join(".env", "bin", "activate_this.py")
 with open(join(".env", "bin", "activate_this.py"), "r") as f:
@@ -36,19 +36,19 @@ import bcrypt
 if not isfile("db/Issues.db"):
     Popen(["rm",
            "Issues.db"],
-           stderr=DEVNULL).wait() 
+          stderr=DEVNULL).wait()
     create_db()
     Popen(["mv",
            "Issues.db",
            "db/Issues.db"]).wait()
     print("\nBanco de dados criado")
 
-print("\nDeseja criar um usuário de administrador? (Y/n)")
+print("\nDeseja criar um usuario de administrador? (Y/n)")
 if input().lower().strip() == "n":
     exit()
 
 print("")
-print("Usuário:")
+print("Usuario:")
 usuario = input()
 print("Senha:")
 senha = getpass("")
@@ -79,4 +79,4 @@ conn.commit()
 conn.close()
 print("Administrador criado")
 
-print("Por favor altere as informações no arquivo `config.py`")
+print("Por favor altere as informacoes no arquivo `config.py`")
