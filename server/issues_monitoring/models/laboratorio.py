@@ -7,8 +7,8 @@ from datetime import datetime
 
 class Laboratorio:
     def __init__(self, nome, endereco, intervalo_parser,
-                 intervalo_arduino, zona_conforto_lab = None,
-                 id = None, equipamentos = [], membros = []):
+                 intervalo_arduino, ssid, latitude, longitude,
+                 zona_conforto_lab=None, id = None, equipamentos = [], membros = []):
         self.nome              = nome
         self.endereco          = endereco
         self.intervalo_parser  = intervalo_parser
@@ -17,6 +17,9 @@ class Laboratorio:
         self.id                = id
         self.equipamentos      = equipamentos
         self.membros           = membros
+        self.ssid              = ssid
+        self.latitude          = latitude
+        self.longitude         = longitude
 
     def obter_ultima_medida(lab_id, data_inicio, data_final):
         data = db.fetchone("""
@@ -52,17 +55,20 @@ class Laboratorio:
                 self.nome,
                 self.endereco,
                 self.intervalo_parser,
-                self.intervalo_arduino)
+                self.intervalo_arduino,
+                self.ssid,
+                self.latitude,
+                self.longitude)
         self.id = db.execute("""
             INSERT INTO Lab
             (zona_conforto_id, nome, endereco, intervalo_parser,
-             intervalo_arduino)
-            VALUES (?, ?, ?, ?, ?);""", args,
+             intervalo_arduino, ssid, latitude, longitude)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?);""", args,
             return_id=True)
 
     def obter(id):
         data = db.fetchone("""SELECT nome, endereco, intervalo_parser,
-                                     intervalo_arduino, lab_id
+                                     intervalo_arduino, ssid, latitude, longitude, lab_id
                               FROM LAB
                               WHERE lab_id = ?;""", (id,))
         if data is not None:
@@ -71,7 +77,7 @@ class Laboratorio:
 
     def obter_todos():
         data = db.fetchall("SELECT nome, lab_id FROM Lab")
-        return [Laboratorio(d[0], None, None, None, None, d[1]) for d in data]
+        return [Laboratorio(d[0], None, None, None, None, None, None, None, d[1]) for d in data]
 
     def obter_todos_ids():
         data = db.fetchall("SELECT lab_id FROM Lab;")
@@ -80,7 +86,7 @@ class Laboratorio:
     def obter_informacoes():
         data = db.fetchall("""
             SELECT l.lab_id, l.nome, l.endereco, l.intervalo_parser,
-            l.intervalo_arduino, zc.temp_min, zc.temp_max,
+            l.intervalo_arduino, l.ssid, l.latitude, l.longitude, zc.temp_min, zc.temp_max,
             zc.umid_min, zc.umid_max, l.lab_id,
             e.nome, e.descricao, e.temp_min, e.temp_max, e.end_mac, e.parent_id, e.equip_id,
             u.user_id, u.nome, u.email, u.data_aprov
@@ -102,9 +108,9 @@ class Laboratorio:
             usuarios_id.setdefault(d[0], {None})
 
             usuario_lab   = UsuarioLab(*d[-4:])
-            equipamento   = Computador(*d[9:-4])
-            zona_conforto = ZonaConforto(*d[5:10])
-            lab_info      = list(d[1:5]) + [zona_conforto]
+            equipamento   = Computador(*d[12:-4])
+            zona_conforto = ZonaConforto(*d[8:13])
+            lab_info      = list(d[1:8]) + [zona_conforto]
 
             _dict.setdefault(d[0], Laboratorio(*lab_info,
                                                membros=[],
@@ -127,12 +133,18 @@ class Laboratorio:
             SET nome = ?,
                 endereco = ?,
                 intervalo_parser = ?,
-                intervalo_arduino = ?
+                intervalo_arduino = ?,
+                ssid = ?,
+                latitude = ?,
+                longitude = ?
             WHERE lab_id = ?;""",
             (self.nome,
              self.endereco,
              self.intervalo_parser,
              self.intervalo_arduino,
+             self.ssid,
+             self.latitude,
+             self.longitude,
              self.id))
 
     def reset_lista_presenca():

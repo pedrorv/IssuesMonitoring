@@ -27,7 +27,10 @@ def work():
             nome CHAR(255) NOT NULL,
             endereco CHAR(255) NOT NULL,
             intervalo_parser INTEGER NOT NULL,
-            intervalo_arduino INTEGER NOT NULL);
+            intervalo_arduino INTEGER NOT NULL,
+            ssid CHAR(255) NOT NULL,
+            latitude FLOAT NOT NULL,
+            longitude FLOAT NOT NULL);
     """)
 
     cursor.execute("""
