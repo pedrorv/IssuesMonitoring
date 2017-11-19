@@ -69,7 +69,8 @@ def laboratorios():
                            admin=admin_autenticado(),
                            pagina='laboratorios')
 
-    args = [id, nome, endereco, intervalo_parser, intervalo_arduino]
+    args = [id, nome, endereco, intervalo_parser,
+            intervalo_arduino, ssid, latitude, longitude]
     if "" not in args:
         controllers.atualizar_informacoes_lab(*args)
 
@@ -130,8 +131,11 @@ def editar_laboratorio_post(id, nome=""):
     endereco = request.form.get("endereco") or ' '
     intervalo_parser = request.form.get("intervalo-parser") or ''
     intervalo_arduino = request.form.get("intervalo-arduino") or ''
+    ssid = request.form.get("ssid") or ''
+    latitude = request.form.get("latitude") or ''
+    longitude = request.form.get("longitude") or ''
 
-    args = [id, nome, endereco, intervalo_parser, intervalo_arduino]
+    args = [id, nome, endereco, intervalo_parser, intervalo_arduino, ssid, latitude, longitude]
     if "" not in args:
         if (endereco is ' '):
             args[2] = ''
@@ -214,8 +218,11 @@ def cadastro_lab():
     temp_max = request.form.get("temp-max") or ""
     umid_min = request.form.get("umid-min") or ""
     umid_max = request.form.get("umid-max") or ""
+    ssid = request.form.get("ssid") or ""
+    latitude = request.form.get("latitude") or ""
+    longitude = request.form.get("longitude") or ""
     args = [nome, endereco, intervalo_parser, intervalo_arduino,
-            temp_min, temp_max, umid_min, umid_max]
+            temp_min, temp_max, umid_min, umid_max, ssid, latitude, longitude]
     if "" not in args:
         if (endereco is " "):
             args[1] = ""

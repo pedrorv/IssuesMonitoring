@@ -7,9 +7,10 @@ from ..common.mail import send_email
 from time import sleep
 import json
 
+
 def cadastro_laboratorio(nome, endereco, intervalo_parser,
                           intervalo_arduino, temp_min, temp_max,
-                          umid_min, umid_max):
+                         umid_min, umid_max, ssid, latitude, longitude):
     zona_de_conforto = ZonaConforto(temp_min,
                                     temp_max,
                                     umid_min,
@@ -20,6 +21,9 @@ def cadastro_laboratorio(nome, endereco, intervalo_parser,
                               endereco,
                               intervalo_parser,
                               intervalo_arduino,
+                              ssid,
+                              latitude,
+                              longitude,
                               zona_de_conforto)
     laboratorio.cadastrar()
 
@@ -38,11 +42,14 @@ def atualizar_zona_de_conforto(temp_min, temp_max, umid_min, umid_max, lab_id):
     zona_conforto.editar()
 
 def atualizar_informacoes_lab(lab_id, nome, endereco, intervalo_parser,
-                              intervalo_arduino):
+                              intervalo_arduino, ssid, latitude, longitude):
     laboratorio = Laboratorio(nome,
                               endereco,
                               intervalo_parser,
                               intervalo_arduino,
+                              ssid,
+                              latitude,
+                              longitude,
                               id=lab_id)
     laboratorio.editar()
 
