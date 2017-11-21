@@ -8,7 +8,7 @@ import time
 
 
 class UsuarioLab(Usuario):
-    def __init__(self, user_id, nome, email, data_aprovacao=None,
+    def __init__(self, user_id, nome, email, temp_min, temp_max, umid_min, umid_max, data_aprovacao=None,
                  laboratorio=None, lab_id=None, data_entrada=None, data_evento=None, evento=None, id=None):
         super().__init__(nome, email, data_aprovacao)
         self.user_id = user_id
@@ -20,10 +20,15 @@ class UsuarioLab(Usuario):
         self.data_entrada = data_entrada
         self.data_evento = data_evento
         self.evento = evento
+        self.temp_min = temp_min
+        self.temp_max = temp_max
+        self.umid_min = umid_min
+        self.umid_max = umid_max
         self.id = id
 
     def obter(user_id):
-        data = db.fetchone("""SELECT id, user_id, nome, email, data_aprov
+        data = db.fetchone("""SELECT id, user_id, nome, email, temp_min,
+                                     temp_max, umid_min, umid_max, data_aprov
                            FROM User_Lab
                            WHERE user_id = ?;""",
                            (user_id,))
@@ -34,11 +39,12 @@ class UsuarioLab(Usuario):
 
     def obter_todos():
         data = db.fetchall(
-            "SELECT id, user_id, nome, email, data_aprov FROM User_Lab")
+            "SELECT id, user_id, nome, email, temp_min, temp_max, umid_min, umid_max, data_aprov FROM User_Lab")
         return [UsuarioLab(*d[1:], id=d[0]) for d in data]
 
     def obter_do_laboratorio(id):
-        data = db.fetchall("""SELECT u.id, u.user_id, u.nome, u.email, u.data_aprov
+        data = db.fetchall("""SELECT u.id, u.user_id, u.nome, u.email, u.temp_min, 
+                                     u.temp_max, u.umid_min, u.umid_max, u.data_aprov
                             FROM User_Lab u
                             INNER JOIN Presenca p
                               ON p.user_id = u.user_id
@@ -100,6 +106,10 @@ class UsuarioLab(Usuario):
         values = (self.user_id,
                   self.nome,
                   self.email,
+                  self.temp_min,
+                  self.temp_max,
+                  self.umid_min,
+                  self.umid_max,
                   self.data_aprovacao)
 
         data = UsuarioLab.obter(self.user_id)
@@ -109,8 +119,8 @@ class UsuarioLab(Usuario):
 
         db.execute("""
             INSERT INTO User_Lab
-            (user_id, nome, email, data_aprov)
-            VALUES (?, ?, ?, ?);""", values)
+            (user_id, nome, email, temp_min, temp_max, umid_min, umid_max, data_aprov)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?);""", values)
 
         UsuarioLab.adicionar_ao_laboratorio(self.lab_id,
                                             self.user_id)
@@ -120,11 +130,19 @@ class UsuarioLab(Usuario):
             UPDATE User_Lab
             SET nome = ?,
                 email = ?,
-                user_id = ?
+                user_id = ?,
+                temp_min = ?,
+                temp_max = ?,
+                umid_min = ?,
+                umid_max = ?
             WHERE id = ?;""",
                    (self.nome,
                     self.email,
                     self.user_id,
+                    self.temp_min,
+                    self.temp_max,
+                    self.umid_min,
+                    self.umid_max,
                     self.id))
         if old_user_id is not None:
             db.execute("""

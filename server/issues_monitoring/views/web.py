@@ -349,10 +349,18 @@ def alterar_usuario_lab(lab_id, lab_nome, id):
         user_id = request.form.get('id-user') or ''
         nome = request.form.get('nome') or ''
         email = request.form.get('email') or ''
+        temp_min = request.form.get("temp-min") or ""
+        temp_max = request.form.get("temp-max") or ""
+        umid_min = request.form.get("umid-min") or ""
+        umid_max = request.form.get("umid-max") or ""
         userToEdit = controllers.obter_usuario_lab(id)
         userToEdit.nome = nome
         userToEdit.email = email
         userToEdit.user_id = user_id
+        userToEdit.temp_min = temp_min
+        userToEdit.temp_max = temp_max
+        userToEdit.umid_min = umid_min
+        userToEdit.umid_max = umid_max
         if (id != user_id):
             userToEdit.editar(old_user_id=id)
         else:
@@ -429,7 +437,11 @@ def cadastro_usuario_lab_post():
     user_id = request.form.get('id-user') or ''
     nome = request.form.get('nome') or ''
     email = request.form.get('email') or ''
-    args = [lab_id, user_id, nome, email]
+    temp_min = request.form.get("temp-min") or ""
+    temp_max = request.form.get("temp-max") or ""
+    umid_min = request.form.get("umid-min") or ""
+    umid_max = request.form.get("umid-max") or ""
+    args = [lab_id, user_id, nome, email, temp_min, temp_max, umid_min, umid_max]
 
     success = False
     if "" not in args:

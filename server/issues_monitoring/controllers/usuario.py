@@ -78,11 +78,15 @@ def obter_usuarios_laboratorios():
     return UsuarioLab.obter_todos()
 
 
-def cadastro_usuario_lab(lab_id, user_id, nome, email):
+def cadastro_usuario_lab(lab_id, user_id, nome, email, temp_min, temp_max, umid_min, umid_max):
     if not UsuarioLab.existe(user_id):
         usuario = UsuarioLab(user_id,
                              nome,
                              email,
+                             temp_min,
+                             temp_max,
+                             umid_min,
+                             umid_max,
                              lab_id=lab_id)
         usuario.cadastrar()
         return True
@@ -90,8 +94,9 @@ def cadastro_usuario_lab(lab_id, user_id, nome, email):
         return False
 
 
-def editar_usuario_lab(user_id, nome, email):
-    usuario = UsuarioLab(user_id, nome, email)
+def editar_usuario_lab(user_id, nome, email, temp_min, temp_max, umid_min, umid_max):
+    usuario = UsuarioLab(user_id, nome, email, temp_min,
+                         temp_max, umid_min, umid_max)
     usuario.editar()
 
 

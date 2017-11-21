@@ -1,13 +1,12 @@
-{% extends 'menu.html' %}
-
-{% block title %}Issues Monitoring{% endblock %}
-
-{% block header %}
+{% extends 'menu.html' %} {% block title %}Issues Monitoring{% endblock %} {% block header %}
 <link rel="stylesheet" type="text/css" href="/static/css/form.css" />
+<link rel="stylesheet" type="text/css" href="/static/css/gerenciar.css" />
 <link rel="stylesheet" type="text/css" href="/static/css/labs.css" />
-{% endblock %}
-
-{% block content %}
+<link rel="stylesheet" type="text/css" href="/static/css/round_sliders.css" /> {% endblock %} {% block js %}
+<script src="/static/jquery-ui/jquery-ui.min.js"></script>
+<script src="/static/js/switch_view.js"></script>
+<script src="/static/js/ajax.js"></script>
+<script src="/static/js/labs.js"></script> {% endblock %} {% block content %}
 <div id="nav-bar">
     <div class="page-title">
         <h3>Cadastro de Usuário do Laboratório</h3>
@@ -16,7 +15,8 @@
     <div class="neat-form" id="hidden-form">
         <form method="POST">
             <fieldset>
-                <legend><span class="number">1</span> Laboratório Associado</legend>
+                <legend>
+                    <span class="number">1</span> Laboratório Associado</legend>
                 <select name="id-lab">
                     <optgroup label="Laboratórios">
                         {% for lab in laboratorios %}
@@ -26,13 +26,37 @@
                 </select>
             </fieldset>
             <fieldset>
-                <legend><span class="number">2</span> Identificação MyDenox</legend>
+                <legend>
+                    <span class="number">2</span> Identificação MyDenox</legend>
                 <input type="text" name="id-user" placeholder="Mesmo ID registrado no sistema MyDenox">
             </fieldset>
             <fieldset>
-                <legend><span class="number">3</span> Dados do Usuário</legend>
+                <legend>
+                    <span class="number">3</span> Dados do Usuário</legend>
                 <input type="text" name="nome" placeholder="Nome Completo">
                 <input type="text" name="email" placeholder="E-mail">
+            </fieldset>
+            <fieldset>
+                <legend>
+                    <span class="number">4</span> Zona de Conforto</legend>
+                <div class="legenda-cadastro">Temperatura do Laboratório:</div>
+                <div class="div-double-slider">
+                    <div id="slider-temp" class="double-slider"></div>
+                    <input type="hidden" name="temp-min" id="temp-min" value="0">
+                    <input type="hidden" name="temp-max" id="temp-max" value="0">
+                    <span class="double-slider-value">
+                        <input type="url" id="temp-lab" class="slider-bounds-lab" readonly>
+                    </span>
+                </div>
+                <div class="legenda-cadastro">Umidade do Laboratório:</div>
+                <div class="div-double-slider">
+                    <div id="slider-umidade" class="double-slider"></div>
+                    <input type="hidden" name="umid-min" id="umid-min" value="0">
+                    <input type="hidden" name="umid-max" id="umid-max" value="0">
+                    <span class="double-slider-value">
+                        <input type="url" id="umidade-lab" class="slider-bounds-lab" readonly>
+                    </span>
+                </div>
             </fieldset>
             <input type="submit" value="Cadastrar Usuário do Laboratório" />
         </form>

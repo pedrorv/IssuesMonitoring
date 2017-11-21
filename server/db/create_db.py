@@ -69,6 +69,10 @@ def work():
             user_id CHAR(4) NOT NULL,
             nome CHAR(255) NOT NULL,
             email CHAR(255) NOT NULL,
+            temp_min FLOAT NOT NULL,
+            temp_max FLOAT NOT NULL,
+            umid_min FLOAT NOT NULL,
+            umid_max FLOAT NOT NULL,
             data_aprov INTEGER);
     """)
 

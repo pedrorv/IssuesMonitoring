@@ -89,7 +89,7 @@ class Laboratorio:
             l.intervalo_arduino, l.ssid, l.latitude, l.longitude, zc.temp_min, zc.temp_max,
             zc.umid_min, zc.umid_max, l.lab_id,
             e.nome, e.descricao, e.temp_min, e.temp_max, e.end_mac, e.parent_id, e.equip_id,
-            u.user_id, u.nome, u.email, u.data_aprov
+            u.user_id, u.nome, u.email, u.temp_min, u.temp_max, u.umid_min, u.umid_max, u.data_aprov
             FROM Lab as l
             INNER JOIN Zona_de_Conforto_Lab as zc
               ON l.zona_conforto_id = zc.zona_conforto_id
@@ -107,8 +107,8 @@ class Laboratorio:
             equipamentos_id.setdefault(d[0], {None})
             usuarios_id.setdefault(d[0], {None})
 
-            usuario_lab   = UsuarioLab(*d[-4:])
-            equipamento   = Computador(*d[12:-4])
+            usuario_lab   = UsuarioLab(*d[-8:])
+            equipamento   = Computador(*d[12:-8])
             zona_conforto = ZonaConforto(*d[8:13])
             lab_info      = list(d[1:8]) + [zona_conforto]
 
