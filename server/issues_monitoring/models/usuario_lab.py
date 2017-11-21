@@ -43,7 +43,7 @@ class UsuarioLab(Usuario):
         return [UsuarioLab(*d[1:], id=d[0]) for d in data]
 
     def obter_do_laboratorio(id):
-        data = db.fetchall("""SELECT u.id, u.user_id, u.nome, u.email, u.temp_min, 
+        data = db.fetchall("""SELECT u.id, u.user_id, u.nome, u.email, u.temp_min,
                                      u.temp_max, u.umid_min, u.umid_max, u.data_aprov
                             FROM User_Lab u
                             INNER JOIN Presenca p
@@ -119,7 +119,8 @@ class UsuarioLab(Usuario):
 
         db.execute("""
             INSERT INTO User_Lab
-            (user_id, nome, email, temp_min, temp_max, umid_min, umid_max, data_aprov)
+            (user_id, nome, email, temp_min,
+             temp_max, umid_min, umid_max, data_aprov)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?);""", values)
 
         UsuarioLab.adicionar_ao_laboratorio(self.lab_id,
@@ -259,7 +260,8 @@ class UsuarioLab(Usuario):
 
     def validar_usuario_authenticator(user_id, email):
         data = db.fetchall("""SELECT User_Lab.user_id, User_Lab.email, Presenca.lab_id, Lab.nome, Presenca.presente,
-                                     User_Lab.temp_min, User_Lab.temp_max, User_Lab.umid_min, User_Lab.umid_max
+                                     User_Lab.temp_min, User_Lab.temp_max, User_Lab.umid_min, User_Lab.umid_max,
+                                     Lab.ssid, Lab.latitude, Lab.longitude
                            FROM User_Lab
                            INNER JOIN Presenca
                            ON User_Lab.user_id = Presenca.user_id
@@ -274,12 +276,12 @@ class UsuarioLab(Usuario):
         labs = []
         for lab in data:
             labs.append(
-                {'labId': lab[2], 'name': lab[3], 'present': bool(lab[4])})
+                {'labId': lab[2], 'name': lab[3], 'present': bool(lab[4]), 'ssid': lab[9], 'latitude': lab[10], 'longitude': lab[11]})
 
         return {
-            'userId': data[0][0], 'email': data[0][1], 
-            'temp': { 'min': data[0][5], 'max': data[0][6] }, 
-            'umid': { 'min': data[0][7], 'max': data[0][8] }, 'labs': labs}
+            'userId': data[0][0], 'email': data[0][1],
+            'temp': {'min': data[0][5], 'max': data[0][6]},
+            'umid': {'min': data[0][7], 'max': data[0][8]}, 'labs': labs}
 
     def registrar_entrada_authenticator(user_id, lab_id):
         atualizar = db.execute("""
@@ -332,7 +334,7 @@ class UsuarioLab(Usuario):
                 SELECT user_id, email
                 FROM   User_Lab
                 WHERE user_id = ?
-                AND   email   = ?;""",(user_id, email))
+                AND   email   = ?;""", (user_id, email))
 
         if usuario == None:
             return {'erro': "Não foi possível atualizar as preferências ambientais."}
@@ -345,10 +347,10 @@ class UsuarioLab(Usuario):
                     umid_max = ?
                 WHERE user_id = ?
                 AND   email   = ?;""",
-                                (temp_min, temp_max,
-                                 umid_min, umid_max,
-                                 user_id, email))
-        
+                               (temp_min, temp_max,
+                                umid_min, umid_max,
+                                user_id, email))
+
         if atualizar != None:
             return {'erro': "Não foi possível atualizar as preferências ambientais."}
 
