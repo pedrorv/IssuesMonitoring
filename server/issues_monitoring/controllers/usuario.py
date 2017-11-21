@@ -138,3 +138,7 @@ def registrar_entrada_authenticator(user_id, lab_id):
 
 def registrar_saida_authenticator(user_id, lab_id):
     return UsuarioLab.registrar_saida_authenticator(user_id, lab_id)
+
+
+def atualizar_preferencias_authenticator(user_id, email, temp_min, temp_max, umid_min, umid_max):
+    return UsuarioLab.atualizar_preferencias_authenticator(user_id, email, temp_min, temp_max, umid_min, umid_max)

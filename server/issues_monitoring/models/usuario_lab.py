@@ -326,3 +326,30 @@ class UsuarioLab(Usuario):
             return {'erro': "Não foi possível registrar saída no log."}
 
         return {'mensagem': "Saída registrada com sucesso."}
+
+    def atualizar_preferencias_authenticator(user_id, email, temp_min, temp_max, umid_min, umid_max):
+        usuario = db.fetchone("""
+                SELECT user_id, email
+                FROM   User_Lab
+                WHERE user_id = ?
+                AND   email   = ?;""",(user_id, email))
+
+        if usuario == None:
+            return {'erro': "Não foi possível atualizar as preferências ambientais."}
+
+        atualizar = db.execute("""
+                UPDATE User_Lab
+                SET temp_min = ?,
+                    temp_max = ?,
+                    umid_min = ?,
+                    umid_max = ?
+                WHERE user_id = ?
+                AND   email   = ?;""",
+                                (temp_min, temp_max,
+                                 umid_min, umid_max,
+                                 user_id, email))
+        
+        if atualizar != None:
+            return {'erro': "Não foi possível atualizar as preferências ambientais."}
+
+        return {'mensagem': "Preferências ambientais atualizadas com sucesso."}

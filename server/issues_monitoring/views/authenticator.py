@@ -45,3 +45,23 @@ def registrar_saida_authenticator():
         return resposta
 
     return resposta
+
+
+@app.route('/atualizar_preferencias_authenticator', methods=["POST"])
+def atualizar_preferencias_authenticator():
+    conteudo = request.get_json(silent=True)
+    user_id = conteudo.get('userId')
+    email = conteudo.get('email')
+    temp_min = conteudo.get('tempMin')
+    temp_max = conteudo.get('tempMax')
+    umid_min = conteudo.get('umidMin')
+    umid_max = conteudo.get('umidMax')
+    validacao = controllers.atualizar_preferencias_authenticator(
+        user_id, email, temp_min, temp_max, umid_min, umid_max)
+    resposta = jsonify(validacao)
+
+    if 'erro' in validacao:
+        resposta.status_code = 500
+        return resposta
+
+    return resposta
