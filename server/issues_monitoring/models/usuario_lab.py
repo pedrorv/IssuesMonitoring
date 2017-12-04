@@ -81,7 +81,8 @@ class UsuarioLab(Usuario):
 
     def presentes(lab_id):
         data = db.fetchall("""SELECT u.user_id, u.nome, u.email,
-                                     u.data_aprov, log.data
+                                     u.temp_min, u.temp_max, u.umid_min,
+                                     u.umid_max, u.data_aprov, log.data
                             FROM User_Lab u
                             INNER JOIN Presenca p
                                 ON p.user_id = u.user_id
@@ -217,7 +218,9 @@ class UsuarioLab(Usuario):
 
     def obter_dado_presenca(hoje, amanha, lab_id):
         data = db.fetchall("""
-                SELECT u.user_id, u.nome, u.email, l.data, l.evento
+                SELECT u.user_id, u.nome, u.email, 
+                       u.temp_min, u.temp_max, u.umid_min, u.umid_max,
+                       l.data, l.evento
                 FROM Log_Presenca l
                 INNER JOIN User_Lab u
                   ON l.user_id = u.user_id
