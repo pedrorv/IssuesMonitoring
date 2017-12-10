@@ -287,6 +287,9 @@ class UsuarioLab(Usuario):
             'umid': {'min': data[0][7], 'max': data[0][8]}, 'labs': labs}
 
     def registrar_entrada_authenticator(user_id, lab_id):
+        if user_id is None or lab_id is None:
+            return {'erro': "Identificador do usuário e/ou do laboratório não pode ser nulo."}
+
         atualizar = db.execute("""
                 UPDATE Presenca
                 SET presente = ?
@@ -310,6 +313,9 @@ class UsuarioLab(Usuario):
         return {'mensagem': "Entrada registrada com sucesso."}
 
     def registrar_saida_authenticator(user_id, lab_id):
+        if user_id is None or lab_id is None:
+            return {'erro': "Identificador do usuário e/ou do laboratório não pode ser nulo."}
+
         atualizar = db.execute("""
                 UPDATE Presenca
                 SET presente = ?
@@ -333,6 +339,9 @@ class UsuarioLab(Usuario):
         return {'mensagem': "Saída registrada com sucesso."}
 
     def atualizar_preferencias_authenticator(user_id, email, temp_min, temp_max, umid_min, umid_max):
+        if any(arg is None for arg in (user_id, email, temp_min, temp_max, umid_min, umid_max)):
+            return {'erro': "Parâmetros faltando."}
+
         usuario = db.fetchone("""
                 SELECT user_id, email
                 FROM   User_Lab
@@ -340,7 +349,7 @@ class UsuarioLab(Usuario):
                 AND   email   = ?;""", (user_id, email))
 
         if usuario == None:
-            return {'erro': "Não foi possível atualizar as preferências ambientais."}
+            return {'erro': "Usuário e/ou email inválido(s)."}
 
         atualizar = db.execute("""
                 UPDATE User_Lab
